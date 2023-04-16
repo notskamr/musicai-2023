@@ -1,12 +1,12 @@
 import { addToCollection, uniqueIndex } from '$lib/server/db/collections';
 import type { Actions } from './$types';
 
-let grades = [6, 7, 8, 9, 10, 11, 12];
+let grades = ['6', '7', '8', '9', '10', '11', '12', 'IB1', 'IB2'];
 let sections = ['A', 'B', 'C', 'D', 'E', 'F', 'S', 'S1', 'H', 'H1'];
 export const actions = {
 	default: async ({ request }) => {
 		const data = await request.formData();
-		const grade = Number(data.get('chooseGrade'));
+		const grade = data.get('chooseGrade')?.toString().toUpperCase();
 		const section = data.get('chooseSection')?.toString().toUpperCase();
 		console.log(grade, section);
 

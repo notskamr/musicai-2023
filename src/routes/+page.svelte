@@ -56,7 +56,6 @@
 				id="chooseGrade"
 				name="chooseGrade"
 				class="bg-gray-800 rounded-sm text-white mb-5 text-center py-2"
-				type="number"
 				required
 				bind:value={grade}
 			/>
