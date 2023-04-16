@@ -27,7 +27,6 @@
 	let audio1: HTMLAudioElement;
 	let audio2: HTMLAudioElement;
 
-	$: classGlob = {};
 	onMount(async () => {
 		if (!localStorage.getItem('class')) window.location.pathname = '/';
 		parsedStorage = JSON.parse(localStorage.class);
@@ -45,6 +44,13 @@
 
 		questionNo = thisClass.scores.length + 1;
 		if (questionNo > questions.length) return (window.location.pathname = '/end');
+
+		if (Math.random() < 0.5) {
+			let temp = questions[questionNo - 1].song1;
+			questions[questionNo - 1].song1 = questions[questionNo - 1].song2;
+			questions[questionNo - 1].song2 = temp;
+			questions[questionNo - 1].whichIsAI = questions[questionNo - 1].whichIsAI === 1 ? 2 : 1;
+		}
 
 		let song1 = questions[questionNo - 1].song1;
 		let song2 = questions[questionNo - 1].song2;
@@ -291,13 +297,14 @@
 				</button>
 			</div>
 		</div>
-		<div class="mt-12 flex flex-col items-center gap-y-4">
-			{#if correct === true}
-				<div class="text-4xl text-green-400 font-bold">Correct! +500 points</div>
-			{:else if correct === false}
-				<div class="text-4xl text-red-400 font-bold">Wrong.</div>
-			{/if}
-			<div class="text-2xl font-light">{statusMessage}</div>
-		</div>
+	</div>
+
+	<div class="mt-12 flex flex-col items-center">
+		{#if correct === true}
+			<div class="text-4xl text-green-400 font-bold mb-4">Correct! +500 points</div>
+		{:else if correct === false}
+			<div class="text-4xl text-red-400 font-bold mb-4">Wrong.</div>
+		{/if}
+		<div class="text-2xl font-light">{statusMessage}</div>
 	</div>
 </div>

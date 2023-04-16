@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { redirect } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
-	let grade: number;
+	let grade: string;
 	let section: string;
 
 	onMount(() => {
@@ -39,10 +39,13 @@
 						'Did not succeed in creating class; probably already exists or an invalid entry was done.'
 					);
 					text = 'Get Started Again';
-					grade = NaN;
+					grade = '';
 					section = '';
 				} else {
-					localStorage.setItem('class', JSON.stringify({ grade: grade, section: section }));
+					localStorage.setItem(
+						'class',
+						JSON.stringify({ grade: grade.toUpperCase(), section: section.toUpperCase() })
+					);
 					text = 'Success!';
 					window.location.pathname = '/play';
 				}
