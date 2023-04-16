@@ -29,6 +29,14 @@
 		filteredClasses.sort((a: any, b: any) => {
 			return b.scores[ith] - a.scores[ith];
 		});
+		let position: number = NaN;
+		filteredClasses.forEach((a, i) => {
+			if (a['grade'] === thisClass.grade && a['section'] === thisClass.section) {
+				position = i + 1;
+				return;
+			}
+		});
+		console.log(position);
 		filteredClasses = filteredClasses;
 		console.log(filteredClasses);
 		const grade = parsedStorage.grade;

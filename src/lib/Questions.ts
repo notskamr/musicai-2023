@@ -12,6 +12,7 @@ interface Song {
 	songName: string;
 	url: string;
 	startFrom: number;
+	volume: number
 }
 
 interface Question {
@@ -20,11 +21,12 @@ interface Question {
 	whichIsAI: number;
 }
 
-function song(songName: string, url: string, startFrom: number = NaN) {
+function song(songName: string, url: string, startFrom: number = NaN, volume = 1) {
 	return {
 		songName,
 		url,
-		startFrom
+		startFrom,
+		volume
 	};
 }
 
@@ -35,13 +37,13 @@ function question(song1: Song, song2: Song, whichIsAI: number) {
 
 export const questions = [
 	question(
-		song('I Sing Your Quantum Body - AI', quantum_body),
+		song('I Sing Your Quantum Body - AI', quantum_body, NaN, 0.8),
 		song('Living Mice - C418', living_mice, 89),
 		1
 	),
 	question(
 		song('Life in Technicolor - Coldplay', life_in_technicolor, 34),
-		song('Swirl - AI', swirl),
+		song('Swirl - AI', swirl, NaN, 0.8),
 		2
 	),
 	question(song('Nostalgia - Teau', nostalgia, 11), song('Midnight - AI', midnight), 2)
