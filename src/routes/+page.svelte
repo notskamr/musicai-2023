@@ -15,11 +15,11 @@
 	$: text = 'Get Started!';
 </script>
 
-<div class="flex flex-col w-screen h-screen justify-center items-center text-center">
-	<div class="text-4xl font-semibold mb-3 text-orange-400 wave">Welcome to Guess-the-Song!</div>
-	<div class="text-2xl text-blue-300 mb-8">
-		An AI powered quiz where classes collectively play to guess whether a song is real or
-		AI-generated while competing with other classes.
+<div class="flex flex-col items-center justify-center w-screen h-screen text-center">
+	<div class="mb-3 text-4xl font-semibold text-orange-400 wave">Welcome to Guess-the-AI!</div>
+	<div class="mb-8 text-2xl text-blue-300">
+		An AI powered quiz where classes collectively compete to distinguish real songs from
+		AI-generated ones.
 	</div>
 	<form
 		method="post"
@@ -49,7 +49,7 @@
 			};
 		}}
 	>
-		<div class="text-2xl mb-6 text-slate-800">
+		<div class="mb-6 text-2xl text-slate-800">
 			<input
 				placeholder="Grade"
 				list="grades"
@@ -69,7 +69,7 @@
 				list="sections"
 				id="chooseSection"
 				name="chooseSection"
-				class="bg-gray-800 rounded-sm text-white text-center py-2"
+				class="py-2 text-center text-white bg-gray-800 rounded-sm"
 				required
 				bind:value={section}
 			/>
@@ -80,7 +80,7 @@
 			>
 		</div>
 		<button
-			class="text-3xl bg-blue-800 p-3 rounded-md active:brightness-90 hover:saturate-150 transition duration-150"
+			class="p-3 text-3xl transition duration-150 bg-blue-800 rounded-md active:brightness-90 hover:saturate-150"
 		>
 			{text}
 		</button>
