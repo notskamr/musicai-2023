@@ -214,7 +214,7 @@
 <div
 	class="absolute top-0 left-0 w-screen h-[64px] flex justify-center items-center text-4xl font-semibold text-yellow-500"
 >
-	{`${parsedStorage?.grade || ''}${parsedStorage?.section || ''}`}
+	{`${parsedStorage?.grade || ''}-${parsedStorage?.section || ''}`}
 </div>
 <!-- <div
 	class="absolute m-auto w-screen top-0 left-0 h-[64px] flex justify-center items-center text-4xl font-bold"
@@ -265,7 +265,6 @@
 					This is AI
 				</button>
 			</div>
-			<div class="w-1 h-[110%] rounded-lg bg-gray-200" />
 			<div class="flex flex-col items-center">
 				<div class="text-white text-xl mb-4">{displaySong2}</div>
 				<div class="text-white text-7xl mb-4">{timers[1]}</div>
