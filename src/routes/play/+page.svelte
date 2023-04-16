@@ -256,6 +256,11 @@
 		<span class="font-semibold">Score: </span>{score}
 	</div>
 </div>
+<div
+	class="absolute top-0 left-0 w-screen h-[64px] flex justify-center items-center text-4xl font-semibold text-yellow-500"
+>
+	{`${parsedStorage?.grade || ''}${parsedStorage?.section || ''}`}
+</div>
 <!-- <div
 	class="absolute m-auto w-screen top-0 left-0 h-[64px] flex justify-center items-center text-4xl font-bold"
 >

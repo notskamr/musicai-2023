@@ -6,17 +6,19 @@
 	let section: string;
 
 	onMount(() => {
-		if (localStorage.getItem('class')) window.location.pathname = '/rules';
+		if (localStorage.getItem('class')) window.location.pathname = '/play';
 	});
 
-	let grades = [6, 7, 8, 9, 10, 11, 12];
+	let grades = ['6', '7', '8', '9', '10', '11', '12', 'IB1', 'IB2'];
 	let sections = ['A', 'B', 'C', 'D', 'E', 'F', 'S', 'S1', 'H', 'H1'];
 
 	$: text = 'Get Started!';
 </script>
 
 <div class="flex flex-col items-center justify-center w-screen h-screen text-center">
-	<div class="mb-3 text-4xl font-semibold text-orange-400 wave">Welcome to Guess-the-AI!</div>
+	<div class="mb-3 text-4xl font-semibold text-orange-400 wave">
+		Welcome to <span class="font-bold">MusicAI</span>!
+	</div>
 	<div class="mb-8 text-2xl text-blue-300">
 		An AI powered quiz where classes collectively compete to distinguish real songs from
 		AI-generated ones.
@@ -42,7 +44,7 @@
 				} else {
 					localStorage.setItem('class', JSON.stringify({ grade: grade, section: section }));
 					text = 'Success!';
-					window.location.pathname = '/rules';
+					window.location.pathname = '/play';
 				}
 				// `result` is an `ActionResult` object
 				// `update` is a function which triggers the logic that would be triggered if this callback wasn't set
