@@ -43,13 +43,10 @@ export const questions = [
 		song('Life in Technicolor - Coldplay', life_in_technicolor, 34),
 		song('Swirl - AI', swirl),
 		2
-	)
+	),
+	question(song('Nostalgia - Teau', nostalgia, 11), song('Midnight - AI', midnight), 2)
 ];
 
-// question('Life in Technicolor - Coldplay', life_in_technicolor, false, 34),
-// question('Swirl - AI', swirl, true),
 // question('The Folky Way - AI', the_folky_way, true),
 // question('Do You Really Live Here - AI', do_you_really_live_here, true),
-// question('Nostalgia - Teau', nostalgia, false, 11),
-// question('Midnight - AI', midnight, true),
 // question('Oogway Ascends - Hans Zimmer', oogway_ascends, false, 45)

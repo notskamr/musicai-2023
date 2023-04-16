@@ -15,13 +15,13 @@ export async function load() {
 export const actions = {
 	default: async ({ request }) => {
 		const data = await request.formData();
-		const grade = Number(data.get('grade'));
+		const grade = data.get('grade');
 		const section = data.get('section');
 		const score = Number(data.get('score'));
 
 		let res = await classes
 			.updateOne(
-				{ grade: Number(grade), section: section },
+				{ grade: grade, section: section },
 				{
 					$push: {
 						scores: score
