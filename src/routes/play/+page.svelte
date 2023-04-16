@@ -28,8 +28,7 @@
 	let audio2: HTMLAudioElement;
 
 	$: classGlob = {};
-	async function normalizeAudio(elem: HTMLAudioElement, url: string) {
-		var audioCtx = new AudioContext();
+	async function normalizeAudio(elem: HTMLAudioElement, url: string, audioCtx: AudioContext) {
 		var src = audioCtx.createMediaElementSource(elem);
 		var gainNode = audioCtx.createGain();
 		gainNode.gain.value = 1.0;
@@ -114,19 +113,10 @@
 
 		audio1 = new Audio(song1.url);
 		audio2 = new Audio(song2.url);
-
-		audio1.play();
-		audio1.pause();
-		audio2.play();
-		audio2.pause();
-
-		normalizeAudio(audio1, song1.url);
-		normalizeAudio(audio2, song2.url);
-
-		audio1.play();
-		audio1.pause();
-		audio2.play();
-		audio2.pause();
+		
+		let audioCtx = new AudioContext();
+		normalizeAudio(audio1, song1.url, audioCtx);
+		normalizeAudio(audio2, song2.url, audioCtx);
 
 		if (song1.startFrom) {
 			audio1.currentTime = song1.startFrom;
