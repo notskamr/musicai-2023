@@ -7,7 +7,7 @@ import do_you_really_live_here from '$lib/songs/do_you_really_live_here.mp3';
 import nostalgia from '$lib/songs/nostalgia.mp3';
 import midnight from '$lib/songs/midnight.mp3';
 import oogway_ascends from '$lib/songs/oogway_ascends.mp3';
-
+import remains from "$lib/songs/remains.mp3"
 interface Song {
 	songName: string;
 	url: string;
@@ -46,9 +46,8 @@ export const questions = [
 		song('Swirl - AI', swirl, NaN, 0.8),
 		2
 	),
-	question(song('Nostalgia - Teau', nostalgia, 11), song('Midnight - AI', midnight), 2)
+	question(song('Nostalgia - Teau', nostalgia, 11), song('Midnight - AI', midnight), 2),
+	question(song('The Folky Way - AI', the_folky_way), song('Oogway Ascends - Hans Zimmer', oogway_ascends, 45), 1),
+	question(song('Do You Really Live Here - AI', do_you_really_live_here), song('Remains - Volker Bertelmann', remains, 25), 1)
 ];
 
-// question('The Folky Way - AI', the_folky_way, true),
-// question('Do You Really Live Here - AI', do_you_really_live_here, true),
-// question('Oogway Ascends - Hans Zimmer', oogway_ascends, false, 45)

@@ -3,9 +3,7 @@
 	export let data;
 	let parsedStorage: any;
 
-	$: filteredClasses = [];
 	$: position = NaN;
-	let thisClass: any;
 
 	interface Class {
 		_id: string;
@@ -20,6 +18,7 @@
 		scores: number[];
 		score: number;
 	}
+	let thisClass: Class;
 	$: filteredClasses = <FilteredClass[]>[];
 	onMount(async () => {
 		if (!localStorage.getItem('class')) window.location.pathname = '/';
