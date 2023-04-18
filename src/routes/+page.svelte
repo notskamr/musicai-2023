@@ -42,7 +42,10 @@
 					grade = '';
 					section = '';
 				} else {
-					localStorage.setItem('class', JSON.stringify({ grade: grade, section: section }));
+					localStorage.setItem(
+						'class',
+						JSON.stringify({ grade: grade.toUpperCase(), section: section.toUpperCase() })
+					);
 					text = 'Success!';
 					window.location.pathname = '/play';
 				}

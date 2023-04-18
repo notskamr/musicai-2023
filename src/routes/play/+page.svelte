@@ -27,70 +27,6 @@
 	let audio1: HTMLAudioElement;
 	let audio2: HTMLAudioElement;
 
-	$: classGlob = {};
-	async function normalizeAudio(elem: HTMLAudioElement, url: string) {
-		var audioCtx = new AudioContext();
-		var src = audioCtx.createMediaElementSource(elem);
-		var gainNode = audioCtx.createGain();
-		gainNode.gain.value = 1.0;
-		elem.addEventListener(
-			'play',
-			async function () {
-				src.connect(gainNode);
-				gainNode.connect(audioCtx.destination);
-			},
-			true
-		);
-		elem.addEventListener(
-			'pause',
-			async function () {
-				// disconnect the nodes on pause, otherwise all nodes always run
-				src.disconnect(gainNode);
-				gainNode.disconnect(audioCtx.destination);
-			},
-			true
-		);
-		await fetch(url)
-			.then(function (res) {
-				return res.arrayBuffer();
-			})
-			.then(function (buf) {
-				return audioCtx.decodeAudioData(buf);
-			})
-			.then(function (decodedData) {
-				var decodedBuffer = decodedData.getChannelData(0);
-				var sliceLen = Math.floor(decodedData.sampleRate * 0.05);
-				var averages = [];
-				var sum = 0.0;
-				for (var i = 0; i < decodedBuffer.length; i++) {
-					sum += decodedBuffer[i] ** 2;
-					if (i % sliceLen === 0) {
-						sum = Math.sqrt(sum / sliceLen);
-						averages.push(sum);
-						sum = 0;
-					}
-				}
-				// Ascending sort of the averages array
-				averages.sort(function (a, b) {
-					return a - b;
-				});
-				// Take the average at the 95th percentile
-				var a = averages[Math.floor(averages.length * 0.95)];
-
-				var gain = 1.0 / a;
-				// Perform some clamping
-				// gain = Math.max(gain, 0.02);
-				// gain = Math.min(gain, 100.0);
-
-				// ReplayGain uses pink noise for this one one but we just take
-				// some arbitrary value... we're no standard
-				// Important is only that we don't output on levels
-				// too different from other websites
-				gain = gain / 10.0;
-				console.log('gain determined', elem, a, gain);
-				gainNode.gain.value = gain;
-			});
-	}
 	onMount(async () => {
 		if (!localStorage.getItem('class')) window.location.pathname = '/';
 		parsedStorage = JSON.parse(localStorage.class);
@@ -109,32 +45,30 @@
 		questionNo = thisClass.scores.length + 1;
 		if (questionNo > questions.length) return (window.location.pathname = '/end');
 
+		if (Math.random() < 0.5) {
+			let temp = questions[questionNo - 1].song1;
+			questions[questionNo - 1].song1 = questions[questionNo - 1].song2;
+			questions[questionNo - 1].song2 = temp;
+			questions[questionNo - 1].whichIsAI = questions[questionNo - 1].whichIsAI === 1 ? 2 : 1;
+		}
+
 		let song1 = questions[questionNo - 1].song1;
 		let song2 = questions[questionNo - 1].song2;
 
 		audio1 = new Audio(song1.url);
 		audio2 = new Audio(song2.url);
-
-		audio1.play();
-		audio1.pause();
-		audio2.play();
-		audio2.pause();
-
-		normalizeAudio(audio1, song1.url);
-		normalizeAudio(audio2, song2.url);
-
-		audio1.play();
-		audio1.pause();
-		audio2.play();
-		audio2.pause();
-
-		if (song1.startFrom) {
-			audio1.currentTime = song1.startFrom;
-		}
-		if (song2.startFrom) {
-			audio2.currentTime = song2.startFrom;
-		}
-
+		audio1.currentTime = song1.startFrom ? song1.startFrom : 0;
+		audio2.currentTime = song2.startFrom ? song2.startFrom : 0;
+		audio1.volume = song1.volume ? song1.volume : 1;
+		audio2.volume = song2.volume ? song2.volume : 1;
+		console.log(
+			audio1,
+			audio2,
+			audio1.volume,
+			audio1.currentTime,
+			audio2.volume,
+			audio2.currentTime
+		);
 		if (thisClass.scores.length === 0) {
 			score = 0;
 		} else {
@@ -246,20 +180,41 @@
 			form.submit();
 		}, 4500);
 	}
+	$: fullScreen = false;
 </script>
 
 <div class="flex w-screen justify-between p-4 bg-slate-900">
 	<div class="text-3xl relative">
 		Question {questionNo}
 	</div>
-	<div class="text-3xl justify-self-end">
-		<span class="font-semibold">Score: </span>{score}
+	<div class="text-3xl justify-self-end flex flex-row items-center justify-center">
+		<button
+			class="mr-4 relative z-50"
+			title="Fullscreen"
+			on:click={() => {
+				if (fullScreen) {
+					document.exitFullscreen();
+					fullScreen = false;
+				} else {
+					document.documentElement.requestFullscreen();
+					fullScreen = true;
+				}
+			}}
+			><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+				><path
+					fill="currentColor"
+					d={fullScreen
+						? 'M8 19v-3H5v-2h5v5H8Zm6 0v-5h5v2h-3v3h-2Zm-9-9V8h3V5h2v5H5Zm9 0V5h2v3h3v2h-5Z'
+						: 'M5 19v-5h2v3h3v2H5Zm0-9V5h5v2H7v3H5Zm9 9v-2h3v-3h2v5h-5Zm3-9V7h-3V5h5v5h-2Z'}
+				/></svg
+			></button
+		><span class="font-semibold mr-2">Score: {score}</span>
 	</div>
 </div>
 <div
 	class="absolute top-0 left-0 w-screen h-[64px] flex justify-center items-center text-4xl font-semibold text-yellow-500"
 >
-	{`${parsedStorage?.grade || ''}${parsedStorage?.section || ''}`}
+	{`${parsedStorage?.grade || ''}-${parsedStorage?.section || ''}`}
 </div>
 <!-- <div
 	class="absolute m-auto w-screen top-0 left-0 h-[64px] flex justify-center items-center text-4xl font-bold"
@@ -274,7 +229,7 @@
 	<input name="score" value={score} />
 </form>
 <div
-	class="w-[100vw] h-[80vh] flex flex-col text-center justify-center items-center relative text-9xl"
+	class="w-[100vw] h-[80vh] mt-8 flex flex-col text-center justify-center items-center relative text-9xl"
 >
 	<div class="mb-8" />
 
@@ -310,7 +265,6 @@
 					This is AI
 				</button>
 			</div>
-			<div class="w-1 h-[110%] rounded-lg bg-gray-200" />
 			<div class="flex flex-col items-center">
 				<div class="text-white text-xl mb-4">{displaySong2}</div>
 				<div class="text-white text-7xl mb-4">{timers[1]}</div>
@@ -342,13 +296,14 @@
 				</button>
 			</div>
 		</div>
-		<div class="mt-12 flex flex-col items-center gap-y-4">
-			{#if correct === true}
-				<div class="text-4xl text-green-400 font-bold">Correct! +500 points</div>
-			{:else if correct === false}
-				<div class="text-4xl text-red-400 font-bold">Wrong.</div>
-			{/if}
-			<div class="text-2xl font-light">{statusMessage}</div>
-		</div>
+	</div>
+
+	<div class="mt-12 flex flex-col items-center">
+		{#if correct === true}
+			<div class="text-4xl text-green-400 font-bold mb-4">Correct! +500 points</div>
+		{:else if correct === false}
+			<div class="text-4xl text-red-400 font-bold mb-4">Wrong.</div>
+		{/if}
+		<div class="text-2xl font-light">{statusMessage}</div>
 	</div>
 </div>

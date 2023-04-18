@@ -3,6 +3,8 @@
 	export let data;
 	let parsedStorage: any;
 
+	$: filteredClasses = [];
+	$: position = NaN;
 	let thisClass: any;
 
 	interface Class {
@@ -47,7 +49,12 @@
 		filteredClasses.sort((a: Class, b: Class) => {
 			return b.scores[ith] - a.scores[ith];
 		});
-
+		filteredClasses.forEach((a, i) => {
+			if (a['grade'] === thisClass.grade && a['section'] === thisClass.section) {
+				position = i + 1;
+				return;
+			}
+		});
 		filteredClasses = filteredClasses;
 		console.log(filteredClasses);
 		const grade = parsedStorage.grade;
@@ -55,10 +62,22 @@
 
 		console.log(grade, section);
 	});
+	function nth(n: number) {
+		return ['st', 'nd', 'rd'][((((n + 90) % 100) - 10) % 10) - 1] || 'th';
+	}
 </script>
 
 <div class="w-screen h-screen flex justify-center p-8 items-center flex-col">
-	<div class="text-5xl mb-12 text-green-500">Thanks for playing!</div>
+	<div class="text-5xl mb-2 text-green-500">Thanks for playing!</div>
+	<div
+		class="mb-8 text-2xl {position <= 3
+			? 'text-yellow-400'
+			: position <= 5
+			? 'text-orange-500'
+			: 'text-red-500'}"
+	>
+		You came {position ? `${position}${nth(position)}` : '___'}{position <= 3 ? '!' : '.'}
+	</div>
 	<table class="w-[70%] table-auto border-collapse border border-slate-500 text-center mb-12">
 		<tr class="text-2xl">
 			<th class="border border-slate-600">Grade</th>
