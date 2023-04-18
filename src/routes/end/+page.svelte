@@ -3,32 +3,51 @@
 	export let data;
 	let parsedStorage: any;
 
-	$: filteredClasses = [];
 	let thisClass: any;
+
+	interface Class {
+		_id: string;
+		grade: string;
+		section: string;
+		scores: number[];
+	}
+	interface FilteredClass {
+		_id: string;
+		grade: string;
+		section: string;
+		scores: number[];
+		score: number;
+	}
+	$: filteredClasses = <FilteredClass[]>[];
 	onMount(async () => {
 		if (!localStorage.getItem('class')) window.location.pathname = '/';
 		parsedStorage = JSON.parse(localStorage.class);
-
-		thisClass = data.classes.filter((obj: object) => {
-			// @ts-ignore
+		let classes: Class[] = data.classes;
+		thisClass = classes.filter((obj: Class) => {
 			return obj.grade === parsedStorage.grade && obj.section === parsedStorage.section;
 		})[0];
 
-		console.log(data.classes);
+		console.log(classes);
 		let ith = thisClass.scores.length - 1;
-		for (let i = 0; i < data.classes.length; i++) {
-			if (data.classes[i].scores[ith] || data.classes[i].scores[ith] === 0) {
-				let scores = data.classes[i].scores.slice(0, ith + 1);
-				data.classes[i].scores = scores;
-				data.classes[i].score = scores[ith];
-				// @ts-ignore
-				filteredClasses.push(data['classes'][i]);
+		for (let i = 0; i < classes.length; i++) {
+			if (classes[i].scores[ith] || classes[i].scores[ith] == 0) {
+				let filteredClass: FilteredClass;
+				let scores = classes[i].scores.slice(0, ith + 1);
+				let score = scores[ith];
+
+				// @ts-expect-error
+				filteredClass = classes[i];
+				filteredClass.scores = scores;
+				filteredClass.score = score;
+
+				filteredClasses.push(filteredClass);
 			}
 		}
 
-		filteredClasses.sort((a: any, b: any) => {
+		filteredClasses.sort((a: Class, b: Class) => {
 			return b.scores[ith] - a.scores[ith];
 		});
+
 		filteredClasses = filteredClasses;
 		console.log(filteredClasses);
 		const grade = parsedStorage.grade;
