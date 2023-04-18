@@ -1,19 +1,36 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { beforeUpdate, onMount, tick } from 'svelte';
 	export let data;
 	let parsedStorage: any;
+	interface Class {
+		_id: string;
+		grade: string;
+		section: string;
+		scores: number[];
+	}
+	interface FilteredClass {
+		_id: string;
+		grade: string;
+		section: string;
+		scores: number[];
+		score: number;
+	}
+	$: filteredClasses = <FilteredClass[]>[];
+	let thisClass: Class;
+	$: selfRow = <any>undefined;
 
-	$: filteredClasses = [];
-	let thisClass: any;
+	beforeUpdate(async () => {
+		await tick();
+		selfRow.scrollIntoView({ behavior: 'smooth' });
+	});
 	onMount(async () => {
 		if (!localStorage.getItem('class')) window.location.pathname = '/';
 		parsedStorage = JSON.parse(localStorage.class);
 
-		thisClass = data.classes.filter((obj: object) => {
-			// @ts-ignore
+		thisClass = data.classes.filter((obj: Class) => {
 			return obj.grade === parsedStorage.grade && obj.section === parsedStorage.section;
 		})[0];
-
+		console.log(thisClass);
 		console.log(data.classes);
 		let ith = thisClass.scores.length - 1;
 		for (let i = 0; i < data.classes.length; i++) {
@@ -21,12 +38,19 @@
 				let scores = data.classes[i].scores.slice(0, ith + 1);
 				data.classes[i].scores = scores;
 				data.classes[i].score = scores[ith];
-				// @ts-ignore
 				filteredClasses.push(data['classes'][i]);
 			}
 		}
 
-		filteredClasses.sort((a: any, b: any) => {
+		filteredClasses.sort((a: FilteredClass, b: FilteredClass) => {
+			let nameA = a.grade + a.section;
+			let nameB = b.grade + b.section;
+
+			if (nameA < nameB) return -1;
+			if (nameA > nameB) return 1;
+			return 0;
+		});
+		filteredClasses.sort((a: FilteredClass, b: FilteredClass) => {
 			return b.scores[ith] - a.scores[ith];
 		});
 		filteredClasses = filteredClasses;
@@ -38,7 +62,7 @@
 	});
 </script>
 
-<div class="w-screen h-screen flex justify-center p-8 items-center flex-col">
+<div class="w-screen h-screen flex justify-start overflow-y-scroll p-8 items-center flex-col">
 	<div class="text-4xl mb-4">Leaderboard</div>
 	<table class="w-[70%] table-auto border-collapse border border-slate-500 text-center mb-12">
 		<tr class="text-2xl">
@@ -47,8 +71,8 @@
 			<th class="border border-slate-600">Score</th>
 		</tr>
 		{#each filteredClasses as class_}
-			{#if class_['grade'] === thisClass['grade']}
-				<tr class="font-light text-yellow-400 text-xl">
+			{#if class_ == thisClass}
+				<tr class="font-light text-yellow-400 text-xl" id="selfRow" bind:this={selfRow}>
 					<td class="border border-slate-700">{class_['grade']}</td>
 					<td class="border border-slate-700">{class_['section']}</td>
 					<td class="border border-slate-700">{class_['score']}</td>

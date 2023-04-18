@@ -4,7 +4,7 @@
 	let parsedStorage: any;
 
 	$: position = NaN;
-
+	$: selfRow = <any>undefined;
 	interface Class {
 		_id: string;
 		grade: string;
@@ -66,10 +66,10 @@
 	}
 </script>
 
-<div class="w-screen h-screen flex justify-center p-8 items-center flex-col">
+<div class="w-screen h-screen flex justify-start overflow-y-scroll p-8 items-center flex-col">
 	<div class="text-5xl mb-2 text-green-500">Thanks for playing!</div>
 	<div
-		class="mb-8 text-2xl {position <= 3
+		class="mb-3 text-2xl {position <= 3
 			? 'text-yellow-400'
 			: position <= 5
 			? 'text-orange-500'
@@ -77,6 +77,10 @@
 	>
 		You came {position ? `${position}${nth(position)}` : '___'}{position <= 3 ? '!' : '.'}
 	</div>
+	<button
+		class="px-4 py-2 bg-emerald-900 rounded-md mb-5 hover:saturate-150 active:brightness-75"
+		on:click={() => selfRow.scrollIntoView({ behavior: 'smooth' })}>Jump to position</button
+	>
 	<table class="w-[70%] table-auto border-collapse border border-slate-500 text-center mb-12">
 		<tr class="text-2xl">
 			<th class="border border-slate-600">Grade</th>
@@ -84,8 +88,8 @@
 			<th class="border border-slate-600">Score</th>
 		</tr>
 		{#each filteredClasses as class_}
-			{#if class_['grade'] === thisClass['grade']}
-				<tr class="font-light text-yellow-400 text-xl">
+			{#if class_ === thisClass}
+				<tr class="font-light text-yellow-400 text-xl" bind:this={selfRow}>
 					<td class="border border-slate-700">{class_['grade']}</td>
 					<td class="border border-slate-700">{class_['section']}</td>
 					<td class="border border-slate-700">{class_['score']}</td>
