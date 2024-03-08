@@ -7,3 +7,6 @@ MusicAI is a quiz-based website created for AI Week 2023 that aims to raise awar
 Inspired by 'Kahoot!', I used a gamification-based approach. As part of this, each class collectively competed to distinguish between AI-generated and real music. Participants listen to two samples of songs, one which is AI generated and the other being by real artists, and then must correctly the one is AI generation. The site features a leaderboard that allows classes to see how they stand in comparison to other classes on the same question. 
 
 Thus, MusicAI can show people what AI is capable of while also being fun and enjoyable for classes to play. The site was created using SvelteKit for the routing and frontend as well as MongoDB as a backend database.
+
+## Note
+This code is extremely insecure and naive: scores are sent by the frontend and can be easily edited and changed. However, this can be easily fixed with form actions.
